@@ -1,4 +1,5 @@
 //  REVIEW: Configure a view object, to hold all our functions for dynamic updates and article-related event handlers.
+//  REVIEW: Configure a view object, to hold all our functions for dynamic updates and article-related event handlers.
 var articleView = {};
 
 articleView.populateFilters = function() {
@@ -6,7 +7,11 @@ articleView.populateFilters = function() {
     var authorName, category, optionTag;
     authorName = $(this).find('address a').text();
     optionTag = '<option value="' + authorName + '">' + authorName + '</option>';
-    $('#author-filter').append(optionTag);
+    if ($('#author-filter option[value"' + authorName + '</option>')) {
+      $('#author-filter').append(optionTag);
+    }
+    //If the category exists, do not append a duplicate <option> tag.
+    //If the category does exist, add the <option> tag
     category = $(this).attr('data-category');
     optionTag = '<option value="' + category + '">' + category + '</option>';
     if ($('#category-filter option[value="' + category + '"]').length === 0) {
@@ -24,9 +29,13 @@ articleView.handleAuthorFilter = function() {
             that was aselected. Hint: use an attribute selector to find
             those articles that match the value, and then fade them in.
         */
+      $('article').hide(); // This is the answer to 1 in this TODO
+      $('article[data-author="' + $(this).val() + '"]').fadeIn();
     } else {
     /* Otherwise, we should:
         1. Show all the articles except the template */
+      $('article').fadeIn();
+      $('article.template').hide();
     }
     $('#category-filter').val('');
   });
@@ -36,6 +45,24 @@ articleView.handleCategoryFilter = function() {
   /* TODO: Just like we do for #author-filter above, we should also handle
   change events on the #category-filter element. Be sure to reset the
   #author-filter while you're at it! */
+  $('#category-filter').on('change', function() {
+    if ($(this).val()) {
+      /* TODO: If the select box changes to an option that has a value, we should:
+          1. Hide all of the articles
+          2. Fade in only the articles that match based on on the author
+            that was aselected. Hint: use an attribute selector to find
+            those articles that match the value, and then fade them in.
+        */
+      $('article').hide(); // This is the answer to 1 in this TODO
+      $('article[data-author="' + $(this).val() + '"]').fadeIn();
+    } else {
+    /* Otherwise, we should:
+        1. Show all the articles except the template */
+      $('article').fadeIn();
+      $('article.template').hide();
+    }
+    $('author-filter').val('');
+  });
 };
 
 articleView.handleMainNav = function () {
@@ -45,6 +72,8 @@ articleView.handleMainNav = function () {
       2. Fade in the single .tab-content section that is
         associated with the .tab element's data-content attribute.
     */
+    $('tab-content').hide();
+    $('#' + $(this).data('content)).fadeIn()')
   });
   $('.main-nav .tab:first').click();
 };
@@ -63,3 +92,7 @@ articleView.setTeasers = function() {
 };
 
 // TODO: Invoke all of the above functions (I mean, methods!):
+articleView.populateFilters();
+articleView.populateFilters();
+articleView.handleCategoryFilter();
+articleView.handleMainNav();
